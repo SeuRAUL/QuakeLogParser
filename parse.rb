@@ -2,16 +2,8 @@ logfile = ARGV.first
 
 data = File.open(logfile)
 
+games = []
 
-# game_1: {
-#   total_kills: 45;
-#   players: ["Dono da bola", "Isgalamido", "Zeh"]
-#   kills: {
-#     "Dono da bola": 5,
-#     "Isgalamido": 18,
-#     "Zeh": 20
-#   }
-# }
 game = {total_kills: 0,
         players: [],
         kills: {}}
@@ -39,11 +31,20 @@ game = {total_kills: 0,
     
 
     puts "#{kill[5]} #{kill[7]} #{kill[9]}"
+
+  elsif kill.include? "ShutdownGame:"
+    puts "\n\ngame:", game
+
+    games << game
+
+    game = {total_kills: 0,
+            players: [],
+            kills: {}}
   end
 end
 
 #puts "\n\ngame: total_kills= #{game[:total_kills]}\n #{game[:players]}"
-puts "\n\ngame:", game
+puts "\n\ngames:", games
 
 
 data.close
