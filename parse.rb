@@ -4,10 +4,12 @@ data = File.open(logfile)
 
 games = []
 
-game = {total_kills: 0,
-        players: [],
-        kills: {},
-        kills_by_means: {}}
+def init_game
+  @game = {total_kills: 0,
+          players: [],
+          kills: {},
+          kills_by_means: {}}
+end
 
 def info_miner(line)
   player1 = []
@@ -30,11 +32,10 @@ def info_miner(line)
 end
 
 data.each do
-# (1..200).each do
   kill = data.readline.split(' ')
 
   if kill.include? "Kill:"
-    game[:total_kills] += 1
+    @game[:total_kills] += 1
 
     # get the name os players
     player1, player2, mean_of_kill = info_miner(kill)
@@ -42,35 +43,52 @@ data.each do
 
     if player1 != "<world>"
 
-      # Address players
-      game[:players] << player1   unless game[:players].include?(player1)
+      # Address player1 to tha list of players
+      @game[:players] << player1   unless @game[:players].include?(player1)
       
       # Count kills
-      !game[:kills].has_key?(player1) ? game[:kills][player1] = 1 : game[:kills][player1] += 1
+      !@game[:kills].has_key?(player1) ? @game[:kills][player1] = 1 : @game[:kills][player1] += 1
 
     else  # decrease kill of player killed by <world>
-      !game[:kills].has_key?(player2) ? game[:kills][player2] = -1 : game[:kills][player2] -= 1
+      !@game[:kills].has_key?(player2) ? @game[:kills][player2] = -1 : @game[:kills][player2] -= 1
     end
     
-    game[:players] << player2 unless game[:players].include?(player2)
+    # Address player2 to tha list of players
+    @game[:players] << player2 unless @game[:players].include?(player2)
 
-    game[:kills_by_means].has_key?(mean_of_kill) ? game[:kills_by_means][mean_of_kill] += 1 : game[:kills_by_means][mean_of_kill] = 1
+    @game[:kills_by_means].has_key?(mean_of_kill) ? @game[:kills_by_means][mean_of_kill] += 1 : @game[:kills_by_means][mean_of_kill] = 1
 
-    # puts "#{player1} #{player2} #{kill[kill.length-1]}"
 
   elsif kill.include? "ShutdownGame:"
-    # puts "\n\ngame:", game
+    games << @game
 
-    games << game
-
-    game = {total_kills: 0,
-            players: [],
-            kills: {},
-            kills_by_means: {}}
+    init_game
   end
 end
 
-puts "\ngames:", games
+
+## print games
+number = 1
+games.each do |game|
+  if game.is_a?(Hash)
+    puts "game_#{number}: {\n"
+    puts "\ttotal_kills: #{game[:total_kills]};\n"
+    puts "\tplayers: #{game[:players]}\n"
+    puts "\tkills: {\n"
+    game[:kills].each do |k, v|
+      puts "\t\t\"#{k}\": #{v}"
+    end
+    puts "\t}\n"
+    puts "\tkills_by_means: {\n"
+    game[:kills_by_means].sort.reverse.each do |k, v|
+      puts "\t\t\"#{k}\": #{v}"
+    end
+    puts "\t}\n"
+    puts "}\n"
+    puts
+    number += 1
+  end
+end
 
 
 data.close
