@@ -6,9 +6,10 @@ games = []
 
 game = {total_kills: 0,
         players: [],
-        kills: {}}
+        kills: {},
+        kills_by_means: {}}
 
-def players(line)
+def info_miner(line)
   player1 = []
   player2 = []
   i = 5   # 1st indice of player1
@@ -25,18 +26,19 @@ def players(line)
     i += 1
   end
 
-  return player1.join(' '), player2.join(' ')
+  return player1.join(' '), player2.join(' '), line[line.length-1]
 end
 
-# data.each do
-(1..200).each do
+data.each do
+# (1..200).each do
   kill = data.readline.split(' ')
 
   if kill.include? "Kill:"
     game[:total_kills] += 1
 
     # get the name os players
-    player1, player2 = players(kill)
+    player1, player2, mean_of_kill = info_miner(kill)
+
 
     if player1 != "<world>"
 
@@ -50,25 +52,25 @@ end
       !game[:kills].has_key?(player2) ? game[:kills][player2] = -1 : game[:kills][player2] -= 1
     end
     
-    game[:players] << player2 unless game[:players].include? player2
+    game[:players] << player2 unless game[:players].include?(player2)
 
-    
+    game[:kills_by_means].has_key?(mean_of_kill) ? game[:kills_by_means][mean_of_kill] += 1 : game[:kills_by_means][mean_of_kill] = 1
 
-    puts "#{player1} #{player2} #{kill[kill.length-1]}"
+    # puts "#{player1} #{player2} #{kill[kill.length-1]}"
 
   elsif kill.include? "ShutdownGame:"
-    puts "\n\ngame:", game
+    # puts "\n\ngame:", game
 
     games << game
 
     game = {total_kills: 0,
             players: [],
-            kills: {}}
+            kills: {},
+            kills_by_means: {}}
   end
 end
 
-#puts "\n\ngame: total_kills= #{game[:total_kills]}\n #{game[:players]}"
-puts "\n\ngames:", games
+puts "\ngames:", games
 
 
 data.close
