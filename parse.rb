@@ -8,6 +8,26 @@ game = {total_kills: 0,
         players: [],
         kills: {}}
 
+def players(line)
+  player1 = []
+  player2 = []
+  i = 5   # 1st indice of player1
+  
+  while(line[i] != 'killed')
+    player1 << line[i]
+    i += 1
+  end
+  
+  i += 1     # pass  killed   and begin player2
+  
+  while(line[i] != 'by')
+    player2 << line[i]
+    i += 1
+  end
+
+  return player1.join(' '), player2.join(' ')
+end
+
 # data.each do
 (1..200).each do
   kill = data.readline.split(' ')
@@ -15,22 +35,24 @@ game = {total_kills: 0,
   if kill.include? "Kill:"
     game[:total_kills] += 1
 
-    if kill[5] != "<world>"
+    # get the name os players
+    player1, player2 = players(kill)
+
+    if player1 != "<world>"
 
       # Address players
-      game[:players] << kill[5]   unless game[:players].include?(kill[5])
+      game[:players] << player1   unless game[:players].include?(player1)
       
       # Count kills
-      !game[:kills].has_key?(kill[5]) ? game[:kills][kill[5]] = 1 : game[:kills][kill[5]] += 1
+      !game[:kills].has_key?(player1) ? game[:kills][player1] = 1 : game[:kills][player1] += 1
 
     end
     
-    
-    game[:players] << kill[7] unless game[:players].include? kill[7]
+    game[:players] << player2 unless game[:players].include? player2
 
     
 
-    puts "#{kill[5]} #{kill[7]} #{kill[9]}"
+    puts "#{player1} #{player2} #{kill[kill.length-1]}"
 
   elsif kill.include? "ShutdownGame:"
     puts "\n\ngame:", game
