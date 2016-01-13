@@ -46,6 +46,8 @@ end
       # Count kills
       !game[:kills].has_key?(player1) ? game[:kills][player1] = 1 : game[:kills][player1] += 1
 
+    else  # decrease kill of player killed by <world>
+      !game[:kills].has_key?(player2) ? game[:kills][player2] = -1 : game[:kills][player2] -= 1
     end
     
     game[:players] << player2 unless game[:players].include? player2
